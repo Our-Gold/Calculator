@@ -29,15 +29,15 @@
         <div id="page-index" class="block">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
                 <div class="bg-white p-4 rounded-xl shadow border-b-4 border-blue-500">
-                    <p class="text-sm text-gray-500">ราคาทองปัจจุบัน (บาทละ)</p>
-                    <input type="number" id="currentGoldPrice" value="35000" oninput="calculateRealtime()" class="text-2xl font-bold w-full text-center outline-none text-blue-600">
+                    <p class="text-sm text-gray-500 italic">กรอกราคาทองปัจจุบัน (บันทึกอัตโนมัติ)</p>
+                    <input type="number" id="currentGoldPrice" value="0" onchange="updatePriceToServer()" oninput="calculateRealtime()" class="text-2xl font-bold w-full text-center outline-none text-blue-600 bg-yellow-50 rounded">
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow border-b-4 border-green-500">
-                    <p class="text-sm text-gray-500">ทองในมือ (บาท)</p>
-                    <p id="totalWeight" class="text-2xl font-bold">0.00</p>
+                    <p class="text-sm text-gray-500">ทองในมือ (รวม)</p>
+                    <p id="totalWeight" class="text-2xl font-bold text-gray-800">0.00</p>
                 </div>
                 <div id="profitCard" class="bg-white p-4 rounded-xl shadow border-b-4 border-gray-400">
-                    <p class="text-sm text-gray-500">กำไร/ขาดทุนคาดการณ์</p>
+                    <p class="text-sm text-gray-500">รวมกำไร/ขาดทุนคาดการณ์</p>
                     <p id="totalProfit" class="text-2xl font-bold">0.00</p>
                 </div>
             </div>
@@ -45,13 +45,13 @@
             <div class="bg-white rounded-xl shadow overflow-hidden">
                 <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
                     <h2 class="font-bold">รายการล็อตทองคงเหลือ</h2>
-                    <button onclick="loadData()" class="text-sm text-blue-600">🔄 รีเฟรชข้อมูล</button>
+                    <button onclick="loadData()" class="text-sm bg-blue-50 text-blue-600 px-2 py-1 rounded">🔄 รีเฟรช</button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead class="bg-gray-100 text-sm">
                             <tr>
-                                <th class="p-3">ล็อต/วันที่</th>
+                                <th class="p-3">ล็อต/วันที่ซื้อ</th>
                                 <th class="p-3">น้ำหนักคงเหลือ</th>
                                 <th class="p-3">ต้นทุน/บาท</th>
                                 <th class="p-3">กำไรคาดการณ์</th>
@@ -59,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody id="inventoryList" class="divide-y text-sm">
-                            <tr><td colspan="5" class="p-10 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+                            <tr><td colspan="5" class="p-10 text-center text-gray-400">กำลังโหลดข้อมูลและราคาล่าสุด...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -71,12 +71,12 @@
                 <h2 class="text-xl font-bold mb-4 text-green-700">บันทึกการซื้อทองใหม่</h2>
                 <div class="space-y-3">
                     <div><label class="block text-sm font-medium">วันที่ซื้อ</label><input type="date" id="buyDate" class="w-full border p-2 rounded"></div>
-                    <div><label class="block text-sm font-medium">จำนวนน้ำหนัก (บาท)</label><input type="number" id="buyAmount" class="w-full border p-2 rounded" placeholder="เช่น 2"></div>
-                    <div><label class="block text-sm font-medium">ราคาทองขณะนั้น (บาทละ)</label><input type="number" id="buyPrice" class="w-full border p-2 rounded" placeholder="เช่น 34500"></div>
+                    <div><label class="block text-sm font-medium">น้ำหนัก (บาท)</label><input type="number" id="buyAmount" class="w-full border p-2 rounded" placeholder="เช่น 2"></div>
+                    <div><label class="block text-sm font-medium">ราคาที่ซื้อ (บาทละ)</label><input type="number" id="buyPrice" class="w-full border p-2 rounded" placeholder="เช่น 34500"></div>
                     <div><label class="block text-sm font-medium">ค่ากำเหน็จรวม</label><input type="number" id="buyFee" class="w-full border p-2 rounded" value="0"></div>
                     <div><label class="block text-sm font-medium">หมายเหตุ</label><input type="text" id="buyNote" class="w-full border p-2 rounded" placeholder="ร้านทอง..."></div>
                     <button onclick="submitBuy()" id="btnBuy" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow-lg mt-4">บันทึกลงฐานข้อมูล</button>
-                    <button onclick="showPage('index')" class="w-full text-gray-500 text-sm py-2">ยกเลิก</button>
+                    <button onclick="showPage('index')" class="w-full text-gray-400 text-sm py-2">ยกเลิก</button>
                 </div>
             </div>
         </div>
@@ -96,10 +96,21 @@
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
                 rawData = data.inventory;
+                // ดึงราคาล่าสุดจาก Server มาใส่ในช่อง Input
+                document.getElementById('currentGoldPrice').value = data.lastPrice || 35000;
                 renderInventory();
             } catch (err) {
-                alert("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+                console.error(err);
+                alert("เชื่อมต่อฐานข้อมูลไม่ได้ กรุณาตรวจสอบการ Deploy Web App");
             }
+        }
+
+        // ฟังก์ชันใหม่: บันทึกราคาทองลง Google Sheets ทันทีที่เปลี่ยนค่า
+        async function updatePriceToServer() {
+            const price = document.getElementById('currentGoldPrice').value;
+            const payload = { action: "savePrice", price: price };
+            await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+            console.log("Price updated to server:", price);
         }
 
         function renderInventory() {
@@ -116,7 +127,7 @@
                 totalW += Number(item["คงเหลือ (บาท)"]);
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="p-3 text-xs md:text-sm"><b>${item["Lot ID"]}</b><br><small class="text-gray-400">${item["วันที่ซื้อ"]}</small></td>
+                    <td class="p-3"><b>${item["Lot ID"]}</b><br><small class="text-gray-400">${item["วันที่ซื้อ"]}</small></td>
                     <td class="p-3 font-bold text-blue-600">${item["คงเหลือ (บาท)"]} บาท</td>
                     <td class="p-3">${Number(item["ราคา/บาท"]).toLocaleString()}</td>
                     <td class="p-3 font-semibold" id="diff-${item["Lot ID"]}">-</td>
@@ -141,22 +152,20 @@
                 
                 const diffEl = document.getElementById(`diff-${item["Lot ID"]}`);
                 if(diffEl) {
-                    diffEl.innerHTML = `<span class="${profit >= 0 ? 'text-green-600' : 'text-red-600'}">${profit >= 0 ? '+' : ''}${profit.toLocaleString()}</span>`;
+                    diffEl.innerHTML = `<span class="${profit >= 0 ? 'text-green-600' : 'text-red-600'}">${profit >= 0 ? '+' : ''}${Math.round(profit).toLocaleString()}</span>`;
                 }
             });
 
             const profitEl = document.getElementById('totalProfit');
-            profitEl.innerText = totalProfit.toLocaleString();
+            profitEl.innerText = Math.round(totalProfit).toLocaleString();
             document.getElementById('profitCard').className = `bg-white p-4 rounded-xl shadow border-b-4 ${totalProfit >= 0 ? 'border-green-500 text-green-600' : 'border-red-500 text-red-600'}`;
         }
 
         async function submitBuy() {
             const btn = document.getElementById('btnBuy');
-            const fields = ['buyDate', 'buyAmount', 'buyPrice'];
-            for(let f of fields) { if(!document.getElementById(f).value) return alert("กรุณากรอกข้อมูลให้ครบถ้วน"); }
+            if(!document.getElementById('buyAmount').value || !document.getElementById('buyPrice').value) return alert("กรุณากรอกข้อมูลสำคัญ");
 
-            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึก...";
-            
+            btn.disabled = true; btn.innerText = "⏳ บันทึก...";
             const payload = {
                 action: "buy",
                 date: document.getElementById('buyDate').value,
@@ -172,18 +181,15 @@
         }
 
         async function sellPopup(lotId, max) {
-            const amount = prompt(`คุณต้องการขายจากล็อต ${lotId} จำนวนกี่บาท? (ถืออยู่ ${max} บาท)`, max);
-            if(amount === null || amount === "" || amount <= 0 || amount > max) return alert("จำนวนไม่ถูกต้อง");
-
+            const amount = prompt(`ล็อต ${lotId} (ถืออยู่ ${max} บาท) ขายจำนวนกี่บาท?`, max);
+            if(!amount || amount <= 0 || amount > max) return;
             const price = prompt(`ราคาทองที่ขายได้จริงต่อบาท:`, document.getElementById('currentGoldPrice').value);
             if(!price) return;
 
-            if(confirm(`ยืนยันการขาย ${amount} บาท จากล็อต ${lotId}?`)) {
-                const payload = { action: "sell", lotId: lotId, sellAmount: amount, sellPrice: price };
-                await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-                alert("✅ บันทึกการขายสำเร็จ!");
-                location.reload();
-            }
+            const payload = { action: "sell", lotId: lotId, sellAmount: amount, sellPrice: price };
+            await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+            alert("✅ บันทึกการขายสำเร็จ!");
+            location.reload();
         }
 
         window.onload = loadData;
