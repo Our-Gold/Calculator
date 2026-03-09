@@ -3,78 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gold Smart Pro v2.7</title>
+    <title>Gold Smart Pro v2.8</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
-        .gold-bg { background: linear-gradient(135deg, #b45309 0%, #d97706 100%); }
-        .card { background: white; border-radius: 1.25rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
+        .gold-nav { background: linear-gradient(135deg, #b45309 0%, #d97706 100%); }
+        .compact-card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .text-tiny { font-size: 0.65rem; }
+        .text-small { font-size: 0.75rem; }
+        input:focus { outline: none; border-color: #d97706; }
     </style>
 </head>
-<body class="text-slate-800 text-center">
+<body class="text-slate-800">
 
-    <header class="gold-bg text-white p-4 sticky top-0 z-50 shadow-lg font-bold italic uppercase tracking-wider">
-        🟡 Gold Smart Pro
-    </header>
+    <nav class="fixed bottom-0 left-0 right-0 gold-nav text-white flex justify-around p-2 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+        <button onclick="showPage('report')" class="flex flex-col items-center gap-1 opacity-70" id="nav-report">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <span class="text-[10px]">รายงาน</span>
+        </button>
+        <button onclick="showPage('index')" class="flex flex-col items-center gap-1" id="nav-index">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+            <span class="text-[10px]">รายการทอง</span>
+        </button>
+        <button onclick="showPage('form')" class="flex flex-col items-center gap-1 opacity-70" id="nav-form">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span class="text-[10px]">บันทึกซื้อ</span>
+        </button>
+    </nav>
 
-    <main class="container mx-auto p-4 max-w-md space-y-4">
+    <main class="container mx-auto p-3 max-w-md pb-24">
         
         <script>
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWO5r9liTWZrcJcjhD9LtgW3f1TW7gTsbct6RnIGfqpxH-7z3ofEIVRBj7fdyN5iru_w/exec";
         </script>
 
-        <section class="card p-5 border-b-4 border-blue-500">
-            <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1 tracking-tighter">ราคาทองวันนี้ (บาทละ)</h3>
-            <input type="number" id="currentGoldPrice" onchange="updatePriceToServer()" oninput="calculateRealtime()" 
-            class="text-4xl font-bold w-full text-center outline-none text-blue-600 bg-blue-50 rounded-2xl py-2">
-        </section>
+        <div id="page-report" class="hidden space-y-3 animate-in fade-in">
+            <h2 class="font-bold text-center text-amber-800 uppercase tracking-widest text-sm">ภาพรวมพอร์ตทองคำ</h2>
+            
+            <section class="compact-card p-4 border-t-4 border-blue-500 text-center">
+                <p class="text-tiny text-slate-400 font-bold uppercase mb-1">ราคาทองวันนี้ (กรอกเพื่อคำนวณ)</p>
+                <input type="number" id="currentGoldPrice" onchange="updatePriceToServer()" oninput="calculateRealtime()" 
+                class="text-3xl font-bold w-full text-center text-blue-600 bg-blue-50/50 rounded-lg py-1 border-b-2 border-transparent focus:border-blue-500">
+            </section>
 
-        <section class="grid grid-cols-2 gap-3">
-            <div class="card p-3 border-b-4 border-emerald-500">
-                <p class="text-[9px] text-slate-400 font-bold uppercase leading-tight tracking-tighter italic">1. รวมน้ำหนักปัจจุบัน</p>
-                <div class="text-xl font-bold text-slate-700 mt-1"><span id="totalWeight">0.00</span></div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="compact-card p-3 text-center border-l-4 border-emerald-500">
+                    <p class="text-[9px] text-slate-400 uppercase font-bold">ทองปัจจุบัน</p>
+                    <div class="text-lg font-bold text-slate-700"><span id="totalWeight">0.00</span> บาท</div>
+                </div>
+                <div class="compact-card p-3 text-center border-l-4 border-purple-500">
+                    <p class="text-[9px] text-slate-400 uppercase font-bold">ต้นทุนรวม</p>
+                    <div class="text-lg font-bold text-slate-700"><span id="totalCurrentCost">0</span></div>
+                </div>
+                <div id="profitCard" class="compact-card p-3 text-center border-l-4 border-slate-300">
+                    <p class="text-[9px] text-slate-400 uppercase font-bold">กำไร/ขาดทุน</p>
+                    <div class="text-lg font-bold"><span id="currentProfit">0</span></div>
+                </div>
+                <div class="compact-card p-3 text-center border-l-4 border-orange-500">
+                    <p class="text-[9px] text-orange-600 uppercase font-bold">กำไรสะสม</p>
+                    <div class="text-lg font-bold text-orange-600"><span id="accumulatedProfit">0</span></div>
+                </div>
             </div>
-            <div class="card p-3 border-b-4 border-purple-500">
-                <p class="text-[9px] text-slate-400 font-bold uppercase leading-tight tracking-tighter italic">2. รวมต้นทุนปัจจุบัน</p>
-                <div class="text-xl font-bold text-slate-700 mt-1 font-mono"><span id="totalCurrentCost">0</span></div>
-            </div>
-            <div id="profitCard" class="card p-3 border-b-4 border-slate-300">
-                <p class="text-[9px] text-slate-400 font-bold uppercase leading-tight tracking-tighter italic">3. กำไร/ขาดทุนปัจจุบัน</p>
-                <div class="text-xl font-bold mt-1 font-mono"><span id="currentProfit">0</span></div>
-            </div>
-            <div class="card p-3 border-b-4 border-emerald-400">
-                <p class="text-[9px] text-emerald-600 font-bold uppercase leading-tight tracking-tighter italic">4. กำไรสะสมจากการขาย</p>
-                <div class="text-xl font-bold text-emerald-600 mt-1 font-mono"><span id="accumulatedProfit">0</span></div>
-            </div>
-        </section>
-
-        <div class="flex gap-2">
-             <button onclick="showPage('index')" class="flex-1 bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-xs shadow-sm">หน้าแรก</button>
-             <button onclick="showPage('form')" class="flex-1 gold-bg text-white py-3 rounded-xl font-bold text-xs shadow-md">เพิ่มข้อมูลซื้อ</button>
         </div>
 
-        <div id="page-index" class="space-y-3 text-left">
+        <div id="page-index" class="space-y-2 animate-in fade-in">
             <div class="flex justify-between items-center px-1">
-                <h2 class="font-bold text-slate-700 text-sm italic uppercase tracking-tighter">📋 รายการล็อตคงเหลือ</h2>
-                <button onclick="loadData()" class="text-[9px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full">รีเฟรช</button>
+                <h2 class="font-bold text-slate-700 text-xs italic uppercase tracking-wider">📦 รายการล็อตคงเหลือ</h2>
+                <button onclick="loadData()" class="text-tiny font-bold text-blue-600 bg-white px-2 py-1 rounded shadow-sm">🔄 รีเฟรช</button>
             </div>
-            <div id="inventoryContainer" class="space-y-3 pb-10">
-                <div class="text-center py-20 text-slate-300 italic font-bold">กำลังโหลด...</div>
+            
+            <div id="inventoryContainer" class="space-y-2">
+                <div class="text-center py-20 text-slate-300 italic text-xs">กำลังโหลด...</div>
             </div>
         </div>
 
-        <div id="page-form" class="hidden text-left animate-in slide-in-from-bottom duration-300">
-            <div class="card p-6 border border-slate-100 shadow-xl">
-                <h2 class="text-lg font-bold mb-6 text-emerald-700 border-b pb-2 uppercase italic">➕ บันทึกซื้อทองใหม่</h2>
-                <div class="space-y-4">
-                    <div><label class="text-[10px] font-bold text-slate-500 ml-1 uppercase">วันที่</label><input type="date" id="buyDate" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg font-bold"></div>
-                    <div><label class="text-[10px] font-bold text-blue-600 ml-1 uppercase">ราคาที่ซื้อบาทละ (ทุน)</label><input type="number" id="buyPrice" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 font-black text-lg text-blue-700" placeholder="เช่น 35000"></div>
-                    <div><label class="text-[10px] font-bold text-slate-500 ml-1 uppercase tracking-tighter">น้ำหนักที่ซื้อ (บาท) เช่น 1.75</label><input type="number" step="0.01" id="buyAmount" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg font-bold" placeholder="0.00"></div>
-                    <div><label class="text-[10px] font-bold text-slate-500 ml-1 uppercase">ค่ากำเหน็จรวม</label><input type="number" id="buyFee" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg" value="0"></div>
-                    <div><label class="text-[10px] font-bold text-slate-400 ml-1 italic uppercase">รายละเอียด/หมายเหตุ</label><input type="text" id="buyNote" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg" placeholder="ระบุรายการ"></div>
-                    <button onclick="submitBuy()" id="btnBuy" class="w-full gold-bg text-white py-4 rounded-2xl font-bold shadow-lg mt-4 text-lg active:scale-95 transition">✅ บันทึกข้อมูลสำเร็จ</button>
-                    <button onclick="showPage('index')" class="w-full text-slate-400 text-center text-sm py-3 font-bold">ยกเลิก</button>
+        <div id="page-form" class="hidden animate-in slide-in-from-bottom duration-300">
+            <div class="compact-card p-5 border border-slate-100">
+                <h2 class="font-bold mb-4 text-emerald-700 border-b pb-2 text-sm uppercase tracking-tighter">➕ บันทึกซื้อทองใหม่</h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 ml-1">วันที่</label>
+                        <input type="date" id="buyDate" class="w-full border p-2 rounded-lg text-sm font-bold bg-slate-50">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[10px] font-bold text-blue-600 ml-1">ราคา/บาท</label>
+                            <input type="number" id="buyPrice" class="w-full border p-2 rounded-lg font-bold text-sm" placeholder="ราคาต้นทุน">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 ml-1">น้ำหนัก (บาท)</label>
+                            <input type="number" step="0.01" id="buyAmount" class="w-full border p-2 rounded-lg font-bold text-sm" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 ml-1">ค่ากำเหน็จรวม</label>
+                        <input type="number" id="buyFee" class="w-full border p-2 rounded-lg text-sm" value="0">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-orange-600 ml-1">หมายเหตุ (เช่น สร้อย, แหวน)</label>
+                        <input type="text" id="buyNote" class="w-full border p-2 rounded-lg text-sm bg-orange-50/30" placeholder="ระบุรายละเอียด">
+                    </div>
+                    <button onclick="submitBuy()" id="btnBuy" class="w-full gold-nav text-white py-3 rounded-xl font-bold shadow-md active:scale-95 transition mt-2 text-sm">บันทึกข้อมูลสำเร็จ</button>
+                    <button onclick="showPage('index')" class="w-full text-slate-400 text-center text-[10px] py-2">ยกเลิก</button>
                 </div>
             </div>
         </div>
@@ -85,8 +116,12 @@
         let accProfit = 0;
 
         function showPage(page) {
-            document.getElementById('page-index').classList.toggle('hidden', page !== 'index');
-            document.getElementById('page-form').classList.toggle('hidden', page !== 'form');
+            const pages = ['report', 'index', 'form'];
+            pages.forEach(p => {
+                document.getElementById(`page-${p}`).classList.toggle('hidden', p !== page);
+                document.getElementById(`nav-${p}`).style.opacity = (p === page) ? '1' : '0.6';
+                document.getElementById(`nav-${p}`).classList.toggle('font-bold', p === page);
+            });
             window.scrollTo(0,0);
         }
 
@@ -120,7 +155,7 @@
             container.innerHTML = "";
             
             if (rawData.length === 0) {
-                container.innerHTML = `<div class="card p-10 text-center text-slate-300 italic font-bold">ไม่มีทองเหลือในคลัง</div>`;
+                container.innerHTML = `<div class="compact-card p-10 text-center text-slate-300 italic text-xs">ไม่มีทองในคลัง</div>`;
                 return;
             }
 
@@ -128,36 +163,35 @@
                 const weight = parseFloat(item["คงเหลือ"]) || 0;
                 const buyPrice = parseFloat(item["ราคาซื้อ/บาท"]) || 0;
                 const fee = parseFloat(item["ค่ากำเหน็จ"]) || 0;
-                
-                // จุดที่ 3: ต้นทุนที่แท้จริงของล็อตนั้น (ราคาซื้อเดิม x น้ำหนักที่เหลืออยู่) + ค่ากำเหน็จรวม
                 const rowTotalCost = (buyPrice * weight) + fee;
 
                 totalW += weight;
                 totalC += rowTotalCost;
 
                 const card = document.createElement('div');
-                card.className = "card p-4 flex justify-between items-center border border-slate-50 shadow-sm transition active:scale-[0.98]";
+                card.className = "compact-card p-3 border-l-2 border-amber-400";
                 card.innerHTML = `
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[8px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-bold uppercase tracking-tighter italic">${item["Lot ID"]}</span>
-                            <span class="text-[9px] text-slate-400 font-medium italic">${toThaiDate(item["วันที่ซื้อ"])}</span>
+                    <div class="flex justify-between items-start">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-tiny bg-slate-100 px-1 py-0.5 rounded text-slate-500 font-bold">${item["Lot ID"]}</span>
+                                <span class="text-tiny text-slate-400 font-medium">${toThaiDate(item["วันที่ซื้อ"])}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-small uppercase">${item["รายละเอียด"] || "ไม่มีชื่อ"}</h3>
+                            <div class="text-[10px] text-blue-700 font-medium tracking-tight">
+                                ทุนรวม: <span class="font-bold underline">${Math.round(rowTotalCost).toLocaleString()}</span> 
+                                <span class="text-slate-300 mx-1">|</span> 
+                                กำเหน็จ: ${fee}
+                            </div>
+                            <div class="text-[10px] flex gap-2">
+                                <span class="text-slate-400 font-medium">ทุน/บาท: ${buyPrice.toLocaleString()}</span>
+                                <span class="text-emerald-600 font-bold italic">เหลือ: ${weight.toFixed(2)} บาท</span>
+                            </div>
                         </div>
-                        <h3 class="font-bold text-slate-800 text-sm italic tracking-tighter uppercase mb-2">${item["รายละเอียด"] || "ไม่มีชื่อ"}</h3>
-                        
-                        <div class="text-[10px] text-gray-400 italic mb-1 uppercase tracking-tighter">ค่ากำเหน็จรวม: <span class="text-gray-600 font-bold tracking-tight">${fee.toLocaleString()} บาท</span></div>
-                        
-                        <div class="text-[10px] text-blue-700 font-bold italic uppercase tracking-tighter mb-2">ต้นทุนแท้จริง: <span class="underline text-base tracking-normal">${Math.round(rowTotalCost).toLocaleString()} บาท</span></div>
-                        
-                        <div class="flex gap-4 text-[10px]">
-                            <span class="text-slate-400 font-bold italic tracking-tighter">ซื้อที่บาทละ: ${buyPrice.toLocaleString()}</span>
-                            
-                            <span class="text-emerald-600 font-black uppercase tracking-tighter italic text-xs">คงเหลือ: <span class="text-base font-black">${weight.toFixed(2)}</span> บาท</span>
+                        <div class="text-right flex flex-col items-end gap-1.5">
+                            <div id="diff-${item["Lot ID"]}" class="text-small font-black">-</div>
+                            <button onclick="sellPopup('${item["Lot ID"]}', ${weight})" class="bg-rose-500 text-white px-3 py-1 rounded-md text-[10px] font-bold shadow-sm active:scale-95 transition">ขาย</button>
                         </div>
-                    </div>
-                    <div class="flex flex-col items-end gap-2">
-                        <div id="diff-${item["Lot ID"]}" class="text-sm font-black tabular-nums">-</div>
-                        <button onclick="sellPopup('${item["Lot ID"]}', ${weight})" class="bg-rose-500 text-white px-5 py-2 rounded-xl text-[10px] font-bold shadow active:scale-95 transition uppercase tracking-tighter italic shadow-rose-200">ขาย</button>
                     </div>
                 `;
                 container.appendChild(card);
@@ -184,7 +218,7 @@
                 const profitPerLot = (currentPrice * weight) - currentLotCost;
                 const diffEl = document.getElementById(`diff-${item["Lot ID"]}`);
                 if(diffEl) {
-                    diffEl.innerHTML = `<span class="${profitPerLot >= 0 ? 'text-emerald-500' : 'text-rose-500'} font-black italic">${profitPerLot >= 0 ? '+' : ''}${Math.round(profitPerLot).toLocaleString()}</span>`;
+                    diffEl.innerHTML = `<span class="${profitPerLot >= 0 ? 'text-emerald-600' : 'text-rose-500'} font-bold">${profitPerLot >= 0 ? '+' : ''}${Math.round(profitPerLot).toLocaleString()}</span>`;
                 }
             });
 
@@ -192,8 +226,8 @@
             const profitSum = Math.round(netProfit);
             const profitEl = document.getElementById('currentProfit');
             profitEl.innerText = profitSum.toLocaleString();
-            profitEl.className = profitSum >= 0 ? 'text-xl font-black text-emerald-600 font-mono italic' : 'text-xl font-black text-rose-600 font-mono italic';
-            document.getElementById('profitCard').className = `card p-3 border-b-4 transition-colors ${profitSum >= 0 ? 'border-emerald-400 shadow-emerald-50' : 'border-rose-400 shadow-rose-50'}`;
+            profitEl.className = profitSum >= 0 ? 'text-lg font-bold text-emerald-600' : 'text-lg font-bold text-rose-600';
+            document.getElementById('profitCard').className = `compact-card p-3 text-center border-l-4 transition-colors ${profitSum >= 0 ? 'border-emerald-400' : 'border-rose-400'}`;
         }
 
         async function submitBuy() {
@@ -201,24 +235,24 @@
             const weight = document.getElementById('buyAmount').value;
             const price = document.getElementById('buyPrice').value;
             if(!weight || !price) return alert("⚠️ กรุณากรอกราคาและน้ำหนัก");
-            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
+            btn.disabled = true; btn.innerText = "⏳ บันทึก...";
             const payload = {
                 action: "buy", date: document.getElementById('buyDate').value,
                 amount: weight, price: price, fee: document.getElementById('buyFee').value || 0,
                 note: document.getElementById('buyNote').value
             };
             await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            alert("✅ บันทึกสำเร็จ!"); location.reload();
+            alert("✅ สำเร็จ!"); location.reload();
         }
 
         async function sellPopup(lotId, max) {
-            const amount = prompt(`🛒 ระบุจำนวนบาทที่ต้องการขาย (รองรับทศนิยม เช่น 0.25)\nคงเหลือปัจจุบัน: ${max.toFixed(2)} บาท`, max);
+            const amount = prompt(`🛒 ระบุจำนวนที่ต้องการขาย (คงเหลือ: ${max.toFixed(2)} บาท)`, max);
             if(!amount || amount <= 0 || amount > max) return;
             const price = prompt(`💰 ระบุราคาที่ขายได้จริงต่อบาท:`, document.getElementById('currentGoldPrice').value);
             if(!price) return;
             const payload = { action: "sell", lotId: lotId, sellAmount: amount, sellPrice: price };
             await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            alert("✅ บันทึกการขายสำเร็จ!"); location.reload();
+            alert("✅ บันทึกสำเร็จ!"); location.reload();
         }
         window.onload = loadData;
     </script>
