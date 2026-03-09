@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gold Smart Pro v2.3</title>
+    <title>Gold Smart Pro v2.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         .gold-bg { background: linear-gradient(135deg, #b45309 0%, #d97706 100%); }
-        .card { background: white; border-radius: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .card { background: white; border-radius: 1.25rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-800 text-center">
 
-    <header class="gold-bg text-white p-4 sticky top-0 z-50 shadow-lg text-center font-bold italic tracking-wider">
-        🟡 GOLD SMART PRO
+    <header class="gold-bg text-white p-4 sticky top-0 z-50 shadow-lg font-bold italic uppercase tracking-wider">
+        🟡 Gold Smart Pro
     </header>
 
-    <main class="container mx-auto p-4 max-w-md space-y-4 text-center">
+    <main class="container mx-auto p-4 max-w-md space-y-4">
         
         <script>
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWO5r9liTWZrcJcjhD9LtgW3f1TW7gTsbct6RnIGfqpxH-7z3ofEIVRBj7fdyN5iru_w/exec";
         </script>
 
         <section class="card p-5 border-b-4 border-blue-500">
-            <h3 class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">ราคาทองวันนี้</h3>
+            <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">ราคาทองวันนี้</h3>
             <input type="number" id="currentGoldPrice" onchange="updatePriceToServer()" oninput="calculateRealtime()" 
             class="text-4xl font-bold w-full text-center outline-none text-blue-600 bg-blue-50 rounded-2xl py-2">
         </section>
@@ -33,51 +33,48 @@
         <section class="grid grid-cols-2 gap-3">
             <div class="card p-3 border-b-4 border-emerald-500">
                 <p class="text-[9px] text-slate-400 font-bold uppercase leading-tight">1. รวมน้ำหนักปัจจุบัน</p>
-                <div class="text-xl font-bold text-slate-700 mt-1"><span id="totalWeight">0.00</span> <small class="text-[10px]">บาท</small></div>
+                <div class="text-xl font-bold text-slate-700 mt-1"><span id="totalWeight">0.00</span></div>
             </div>
-
             <div class="card p-3 border-b-4 border-purple-500">
                 <p class="text-[9px] text-slate-400 font-bold uppercase leading-tight">2. รวมต้นทุนปัจจุบัน</p>
                 <div class="text-xl font-bold text-slate-700 mt-1 font-mono"><span id="totalCurrentCost">0</span></div>
             </div>
-
             <div id="profitCard" class="card p-3 border-b-4 border-slate-300">
                 <p class="text-[9px] text-slate-400 font-bold uppercase leading-tight">3. กำไร/ขาดทุนปัจจุบัน</p>
                 <div class="text-xl font-bold mt-1 font-mono"><span id="currentProfit">0</span></div>
             </div>
-
-            <div class="card p-3 border-b-4 border-emerald-400 shadow-sm">
-                <p class="text-[9px] text-emerald-600 font-bold uppercase leading-tight">4. กำไรสะสมจากประวัติขาย</p>
+            <div class="card p-3 border-b-4 border-emerald-400">
+                <p class="text-[9px] text-emerald-600 font-bold uppercase leading-tight">4. กำไรสะสมจากการขาย</p>
                 <div class="text-xl font-bold text-emerald-600 mt-1 font-mono"><span id="accumulatedProfit">0</span></div>
             </div>
         </section>
 
         <div class="flex gap-2">
-             <button onclick="showPage('index')" class="flex-1 bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-xs">หน้าแรก</button>
-             <button onclick="showPage('form')" class="flex-1 gold-bg text-white py-3 rounded-xl font-bold text-xs shadow-md">บันทึกซื้อทอง</button>
+             <button onclick="showPage('index')" class="flex-1 bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-xs shadow-sm active:scale-95 transition">หน้าแรก</button>
+             <button onclick="showPage('form')" class="flex-1 gold-bg text-white py-3 rounded-xl font-bold text-xs shadow-md active:scale-95 transition">บันทึกซื้อทอง</button>
         </div>
 
         <div id="page-index" class="space-y-3 text-left">
-            <div class="flex justify-between items-center px-1 pt-2">
-                <h2 class="font-bold text-slate-700 text-sm italic">📋 รายการล็อตคงเหลือ</h2>
-                <button onclick="loadData()" class="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">รีเฟรช</button>
+            <div class="flex justify-between items-center px-1 pt-1">
+                <h2 class="font-bold text-slate-700 text-sm italic uppercase tracking-tighter">📋 รายการล็อตคงเหลือ</h2>
+                <button onclick="loadData()" class="text-[9px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full shadow-sm">🔄 รีเฟรช</button>
             </div>
             <div id="inventoryContainer" class="space-y-3 pb-10">
-                <div class="text-center py-10 text-slate-400 italic">กำลังดึงข้อมูล...</div>
+                <div class="text-center py-20 text-slate-300 italic font-bold">กำลังดึงข้อมูล...</div>
             </div>
         </div>
 
-        <div id="page-form" class="hidden text-left">
+        <div id="page-form" class="hidden text-left animate-in slide-in-from-bottom duration-300">
             <div class="card p-6 border border-slate-100 shadow-xl">
-                <h2 class="text-lg font-bold mb-6 text-emerald-700 border-b pb-2">➕ บันทึกซื้อทองใหม่</h2>
+                <h2 class="text-lg font-bold mb-6 text-emerald-700 border-b pb-2 uppercase italic tracking-tighter">➕ บันทึกซื้อทองใหม่</h2>
                 <div class="space-y-4">
-                    <div><label class="text-[11px] font-bold text-slate-500 ml-1">วันที่ซื้อ</label><input type="date" id="buyDate" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50"></div>
-                    <div><label class="text-[11px] font-bold text-slate-500 ml-1 text-blue-600">ราคาซื้อต่อบาท (ไม่รวมกำเหน็จ)</label><input type="number" id="buyPrice" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 font-bold" placeholder="เช่น 35000"></div>
-                    <div><label class="text-[11px] font-bold text-slate-500 ml-1">น้ำหนัก (บาท)</label><input type="number" step="any" id="buyAmount" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50" placeholder="เช่น 2.00"></div>
-                    <div><label class="text-[11px] font-bold text-slate-500 ml-1">ค่ากำเหน็จรวม</label><input type="number" id="buyFee" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50" value="0"></div>
-                    <div><label class="text-[11px] font-bold text-blue-600 ml-1 italic">รายละเอียด (แหวน/สร้อย/แท่ง)</label><input type="text" id="buyNote" class="w-full border-2 border-blue-50 p-4 rounded-2xl outline-none focus:border-blue-400 bg-blue-50/50" placeholder="ระบุรายการ"></div>
-                    <button onclick="submitBuy()" id="btnBuy" class="w-full gold-bg text-white py-4 rounded-2xl font-bold shadow-lg mt-4 text-lg">✅ บันทึกข้อมูล</button>
-                    <button onclick="showPage('index')" class="w-full text-slate-400 text-center text-sm py-2">ยกเลิก</button>
+                    <div><label class="text-[10px] font-bold text-slate-500 ml-1 uppercase">วันที่</label><input type="date" id="buyDate" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg"></div>
+                    <div><label class="text-[10px] font-bold text-blue-600 ml-1 uppercase">ราคาซื้อต่อบาท (ทุน)</label><input type="number" id="buyPrice" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 font-bold text-lg" placeholder="เช่น 35000"></div>
+                    <div><label class="text-[10px] font-bold text-slate-500 ml-1 uppercase tracking-tighter">น้ำหนักที่ซื้อ (บาท)</label><input type="number" step="any" id="buyAmount" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg" placeholder="เช่น 2.00"></div>
+                    <div><label class="text-[10px] font-bold text-slate-500 ml-1 uppercase">ค่ากำเหน็จรวม</label><input type="number" id="buyFee" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg" value="0"></div>
+                    <div><label class="text-[10px] font-bold text-slate-400 ml-1 italic uppercase tracking-tight">รายละเอียด/หมายเหตุ</label><input type="text" id="buyNote" class="w-full border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-emerald-500 bg-slate-50 text-lg" placeholder="ระบุรายการ"></div>
+                    <button onclick="submitBuy()" id="btnBuy" class="w-full gold-bg text-white py-4 rounded-2xl font-bold shadow-lg mt-4 text-lg active:scale-95 transition">✅ บันทึกข้อมูลสำเร็จ</button>
+                    <button onclick="showPage('index')" class="w-full text-slate-400 text-center text-sm py-3 font-bold">ยกเลิก</button>
                 </div>
             </div>
         </div>
@@ -117,35 +114,36 @@
             container.innerHTML = "";
             
             if (rawData.length === 0) {
-                container.innerHTML = `<div class="card p-10 text-center text-slate-400 italic">ไม่มีทองในคลัง</div>`;
+                container.innerHTML = `<div class="card p-10 text-center text-slate-300 italic font-bold">ไม่มีทองเหลือในคลัง</div>`;
+                return;
             }
 
             rawData.forEach(item => {
                 const weight = parseFloat(item["คงเหลือ"]) || 0;
-                const buyPricePerUnit = parseFloat(item["ราคาซื้อ/บาท"]) || 0;
-                const totalFee = parseFloat(item["ค่ากำเหน็จ"]) || 0;
+                const buyPrice = parseFloat(item["ราคาซื้อ/บาท"]) || 0;
+                const fee = parseFloat(item["ค่ากำเหน็จ"]) || 0;
                 
-                const currentLotCost = (buyPricePerUnit * weight) + totalFee;
+                const currentLotCost = (buyPrice * weight) + fee;
                 totalW += weight;
                 totalC += currentLotCost;
 
                 const card = document.createElement('div');
-                card.className = "card p-4 flex justify-between items-center border border-slate-50";
+                card.className = "card p-4 flex justify-between items-center border border-slate-50 shadow-sm transition active:scale-[0.98]";
                 card.innerHTML = `
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[8px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-bold">${item["Lot ID"]}</span>
-                            <span class="text-[9px] text-slate-400">${item["วันที่ซื้อ"]}</span>
+                            <span class="text-[8px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-bold uppercase tracking-tighter">${item["Lot ID"]}</span>
+                            <span class="text-[9px] text-slate-400 font-medium">${item["วันที่ซื้อ"]}</span>
                         </div>
-                        <h3 class="font-bold text-slate-800 text-sm italic">${item["หมายเหตุ/รายละเอียด"] || "ไม่มีชื่อ"}</h3>
+                        <h3 class="font-bold text-slate-800 text-sm italic font-medium tracking-tighter">${item["รายละเอียด"] || "ไม่มีชื่อ"}</h3>
                         <div class="mt-2 flex gap-4 text-[10px]">
-                            <span class="text-slate-500 font-medium tracking-tight">ทุน/บาท: ${buyPricePerUnit.toLocaleString()}</span>
-                            <span class="text-blue-600 font-black uppercase">คงเหลือ: ${weight} บาท</span>
+                            <span class="text-slate-500 font-bold italic tracking-tighter">ทุน/บาท: ${buyPrice.toLocaleString()}</span>
+                            <span class="text-blue-600 font-black uppercase tracking-tighter italic">เหลือ: ${weight} บาท</span>
                         </div>
                     </div>
                     <div class="flex flex-col items-end gap-2">
-                        <div id="diff-${item["Lot ID"]}" class="text-xs font-black">-</div>
-                        <button onclick="sellPopup('${item["Lot ID"]}', ${weight})" class="bg-rose-500 text-white px-5 py-2 rounded-xl text-[10px] font-bold active:scale-95 shadow">ขาย</button>
+                        <div id="diff-${item["Lot ID"]}" class="text-xs font-black tabular-nums">-</div>
+                        <button onclick="sellPopup('${item["Lot ID"]}', ${weight})" class="bg-rose-500 text-white px-5 py-2 rounded-xl text-[10px] font-bold shadow active:scale-95 transition uppercase tracking-tighter italic">ขาย</button>
                     </div>
                 `;
                 container.appendChild(card);
@@ -163,10 +161,9 @@
 
             rawData.forEach(item => {
                 const weight = parseFloat(item["คงเหลือ"]) || 0;
-                const buyPricePerUnit = parseFloat(item["ราคาซื้อ/บาท"]) || 0;
-                const totalFee = parseFloat(item["ค่ากำเหน็จ"]) || 0;
-                
-                const currentLotCost = (buyPricePerUnit * weight) + totalFee;
+                const buyPrice = parseFloat(item["ราคาซื้อ/บาท"]) || 0;
+                const fee = parseFloat(item["ค่ากำเหน็จ"]) || 0;
+                const currentLotCost = (buyPrice * weight) + fee;
                 totalW += weight;
                 totalC += currentLotCost;
                 
@@ -181,7 +178,7 @@
             const profitSum = Math.round(netProfit);
             const profitEl = document.getElementById('currentProfit');
             profitEl.innerText = profitSum.toLocaleString();
-            profitEl.className = profitSum >= 0 ? 'text-xl font-bold text-emerald-600' : 'text-xl font-bold text-rose-600';
+            profitEl.className = profitSum >= 0 ? 'text-xl font-bold text-emerald-600 font-mono' : 'text-xl font-bold text-rose-600 font-mono';
             document.getElementById('profitCard').className = `card p-3 border-b-4 transition-colors ${profitSum >= 0 ? 'border-emerald-400' : 'border-rose-400'}`;
         }
 
@@ -189,7 +186,7 @@
             const btn = document.getElementById('btnBuy');
             const weight = document.getElementById('buyAmount').value;
             const price = document.getElementById('buyPrice').value;
-            if(!weight || !price) return alert("กรุณากรอกข้อมูลให้ครบ");
+            if(!weight || !price) return alert("⚠️ กรุณากรอกราคาและน้ำหนัก");
             btn.disabled = true; btn.innerText = "⏳ บันทึกข้อมูล...";
             
             const payload = {
@@ -198,13 +195,13 @@
                 note: document.getElementById('buyNote').value
             };
             await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            alert("บันทึกข้อมูลเรียบร้อย!"); location.reload();
+            alert("✅ บันทึกสำเร็จ!"); location.reload();
         }
 
         async function sellPopup(lotId, max) {
             const amount = prompt(`🛒 ระบุจำนวนบาทที่ต้องการขาย (สูงสุด ${max})`, max);
-            if(amount === null || amount === "" || amount <= 0 || amount > max) return;
-            const price = prompt(`💰 ระบุราคาที่ขายได้จริงต่อบาท:`, document.getElementById('currentGoldPrice').value);
+            if(!amount || amount <= 0 || amount > max) return;
+            const price = prompt(`💰 ระบุราคาที่ขายได้ต่อบาท:`, document.getElementById('currentGoldPrice').value);
             if(!price) return;
             const payload = { action: "sell", lotId: lotId, sellAmount: amount, sellPrice: price };
             await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
