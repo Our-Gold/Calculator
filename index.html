@@ -1,1 +1,192 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Smart Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Kanit', sans-serif; }</style>
+</head>
+<body class="bg-slate-50">
 
+    <nav class="bg-yellow-600 text-white shadow-md p-4 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">🟡 Gold Tracker Pro</h1>
+            <div class="space-x-2">
+                <button onclick="showPage('index')" class="hover:bg-yellow-700 px-3 py-1 rounded">หน้าหลัก</button>
+                <button onclick="showPage('form')" class="bg-white text-yellow-700 px-3 py-1 rounded font-bold shadow-sm">บันทึกซื้อทอง</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-4 max-w-5xl">
+        
+        <script>
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWO5r9liTWZrcJcjhD9LtgW3f1TW7gTsbct6RnIGfqpxH-7z3ofEIVRBj7fdyN5iru_w/exec";
+        </script>
+
+        <div id="page-index" class="block">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
+                <div class="bg-white p-4 rounded-xl shadow border-b-4 border-blue-500">
+                    <p class="text-sm text-gray-500">ราคาทองปัจจุบัน (บาทละ)</p>
+                    <input type="number" id="currentGoldPrice" value="35000" oninput="calculateRealtime()" class="text-2xl font-bold w-full text-center outline-none text-blue-600">
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow border-b-4 border-green-500">
+                    <p class="text-sm text-gray-500">ทองในมือ (บาท)</p>
+                    <p id="totalWeight" class="text-2xl font-bold">0.00</p>
+                </div>
+                <div id="profitCard" class="bg-white p-4 rounded-xl shadow border-b-4 border-gray-400">
+                    <p class="text-sm text-gray-500">กำไร/ขาดทุนคาดการณ์</p>
+                    <p id="totalProfit" class="text-2xl font-bold">0.00</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow overflow-hidden">
+                <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                    <h2 class="font-bold">รายการล็อตทองคงเหลือ</h2>
+                    <button onclick="loadData()" class="text-sm text-blue-600">🔄 รีเฟรชข้อมูล</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-100 text-sm">
+                            <tr>
+                                <th class="p-3">ล็อต/วันที่</th>
+                                <th class="p-3">น้ำหนักคงเหลือ</th>
+                                <th class="p-3">ต้นทุน/บาท</th>
+                                <th class="p-3">กำไรคาดการณ์</th>
+                                <th class="p-3 text-right">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryList" class="divide-y text-sm">
+                            <tr><td colspan="5" class="p-10 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-form" class="hidden">
+            <div class="bg-white p-6 rounded-xl shadow max-w-md mx-auto">
+                <h2 class="text-xl font-bold mb-4 text-green-700">บันทึกการซื้อทองใหม่</h2>
+                <div class="space-y-3">
+                    <div><label class="block text-sm font-medium">วันที่ซื้อ</label><input type="date" id="buyDate" class="w-full border p-2 rounded"></div>
+                    <div><label class="block text-sm font-medium">จำนวนน้ำหนัก (บาท)</label><input type="number" id="buyAmount" class="w-full border p-2 rounded" placeholder="เช่น 2"></div>
+                    <div><label class="block text-sm font-medium">ราคาทองขณะนั้น (บาทละ)</label><input type="number" id="buyPrice" class="w-full border p-2 rounded" placeholder="เช่น 34500"></div>
+                    <div><label class="block text-sm font-medium">ค่ากำเหน็จรวม</label><input type="number" id="buyFee" class="w-full border p-2 rounded" value="0"></div>
+                    <div><label class="block text-sm font-medium">หมายเหตุ</label><input type="text" id="buyNote" class="w-full border p-2 rounded" placeholder="ร้านทอง..."></div>
+                    <button onclick="submitBuy()" id="btnBuy" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow-lg mt-4">บันทึกลงฐานข้อมูล</button>
+                    <button onclick="showPage('index')" class="w-full text-gray-500 text-sm py-2">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let rawData = [];
+
+        function showPage(page) {
+            document.getElementById('page-index').classList.toggle('hidden', page !== 'index');
+            document.getElementById('page-form').classList.toggle('hidden', page !== 'form');
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const data = await res.json();
+                rawData = data.inventory;
+                renderInventory();
+            } catch (err) {
+                alert("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+            }
+        }
+
+        function renderInventory() {
+            const list = document.getElementById('inventoryList');
+            let totalW = 0;
+            list.innerHTML = "";
+
+            if (rawData.length === 0) {
+                list.innerHTML = `<tr><td colspan="5" class="p-10 text-center text-gray-400">ไม่พบรายการทองคงเหลือ</td></tr>`;
+                return;
+            }
+
+            rawData.forEach(item => {
+                totalW += Number(item["คงเหลือ (บาท)"]);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="p-3 text-xs md:text-sm"><b>${item["Lot ID"]}</b><br><small class="text-gray-400">${item["วันที่ซื้อ"]}</small></td>
+                    <td class="p-3 font-bold text-blue-600">${item["คงเหลือ (บาท)"]} บาท</td>
+                    <td class="p-3">${Number(item["ราคา/บาท"]).toLocaleString()}</td>
+                    <td class="p-3 font-semibold" id="diff-${item["Lot ID"]}">-</td>
+                    <td class="p-3 text-right">
+                        <button onclick="sellPopup('${item["Lot ID"]}', ${item["คงเหลือ (บาท)"]})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs shadow-sm">ขาย</button>
+                    </td>
+                `;
+                list.appendChild(row);
+            });
+            document.getElementById('totalWeight').innerText = totalW.toFixed(4);
+            calculateRealtime();
+        }
+
+        function calculateRealtime() {
+            const current = Number(document.getElementById('currentGoldPrice').value);
+            let totalProfit = 0;
+            
+            rawData.forEach(item => {
+                const diffPerUnit = current - Number(item["ราคา/บาท"]);
+                const profit = diffPerUnit * Number(item["คงเหลือ (บาท)"]);
+                totalProfit += profit;
+                
+                const diffEl = document.getElementById(`diff-${item["Lot ID"]}`);
+                if(diffEl) {
+                    diffEl.innerHTML = `<span class="${profit >= 0 ? 'text-green-600' : 'text-red-600'}">${profit >= 0 ? '+' : ''}${profit.toLocaleString()}</span>`;
+                }
+            });
+
+            const profitEl = document.getElementById('totalProfit');
+            profitEl.innerText = totalProfit.toLocaleString();
+            document.getElementById('profitCard').className = `bg-white p-4 rounded-xl shadow border-b-4 ${totalProfit >= 0 ? 'border-green-500 text-green-600' : 'border-red-500 text-red-600'}`;
+        }
+
+        async function submitBuy() {
+            const btn = document.getElementById('btnBuy');
+            const fields = ['buyDate', 'buyAmount', 'buyPrice'];
+            for(let f of fields) { if(!document.getElementById(f).value) return alert("กรุณากรอกข้อมูลให้ครบถ้วน"); }
+
+            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึก...";
+            
+            const payload = {
+                action: "buy",
+                date: document.getElementById('buyDate').value,
+                amount: document.getElementById('buyAmount').value,
+                price: document.getElementById('buyPrice').value,
+                fee: document.getElementById('buyFee').value || 0,
+                note: document.getElementById('buyNote').value
+            };
+
+            await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+            alert("✅ บันทึกการซื้อสำเร็จ!");
+            location.reload();
+        }
+
+        async function sellPopup(lotId, max) {
+            const amount = prompt(`คุณต้องการขายจากล็อต ${lotId} จำนวนกี่บาท? (ถืออยู่ ${max} บาท)`, max);
+            if(amount === null || amount === "" || amount <= 0 || amount > max) return alert("จำนวนไม่ถูกต้อง");
+
+            const price = prompt(`ราคาทองที่ขายได้จริงต่อบาท:`, document.getElementById('currentGoldPrice').value);
+            if(!price) return;
+
+            if(confirm(`ยืนยันการขาย ${amount} บาท จากล็อต ${lotId}?`)) {
+                const payload = { action: "sell", lotId: lotId, sellAmount: amount, sellPrice: price };
+                await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+                alert("✅ บันทึกการขายสำเร็จ!");
+                location.reload();
+            }
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
