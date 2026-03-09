@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gold Smart Pro v3.6</title>
+    <title>Gold Smart Pro v3.7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -31,26 +31,22 @@
     </nav>
 
     <main class="container mx-auto p-3 max-w-md pb-20">
-        
         <script>
-            // ใส่ URL ของคุณที่นี่
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWO5r9liTWZrcJcjhD9LtgW3f1TW7gTsbct6RnIGfqpxH-7z3ofEIVRBj7fdyN5iru_w/exec";
         </script>
 
         <div id="page-report" class="hidden space-y-3 animate-in fade-in text-center">
              <section class="compact-card p-4 border-t-4 border-blue-500">
                 <p class="text-tiny text-slate-400 font-bold uppercase mb-1">ราคาทองวันนี้</p>
-                <input type="number" id="currentGoldPrice" onchange="updatePriceToServer()" oninput="calculateRealtime()" 
-                class="text-3xl font-bold w-full text-center text-blue-600 bg-blue-50/50 rounded-lg py-1 outline-none">
+                <input type="number" id="currentGoldPrice" onchange="updatePriceToServer()" oninput="calculateRealtime()" class="text-3xl font-bold w-full text-center text-blue-600 bg-blue-50/50 rounded-lg py-1">
             </section>
-
-            <div class="grid grid-cols-2 gap-2">
-                <div class="compact-card p-3 border-l-4 border-emerald-500 text-left"><p class="text-[9px] text-slate-400 font-bold uppercase">1. ทองปัจจุบัน</p><div class="text-lg font-bold"><span id="totalWeight">0.00</span></div></div>
-                <div class="compact-card p-3 border-l-4 border-purple-500 text-left"><p class="text-[9px] text-slate-400 font-bold uppercase">2. ต้นทุนรวม</p><div class="text-lg font-bold"><span id="totalCurrentCost">0</span></div></div>
-                <div class="compact-card p-3 border-l-4 border-blue-400 text-left"><p class="text-[9px] text-blue-600 font-bold uppercase">3. มูลค่ารวมวันนี้</p><div class="text-lg font-bold text-blue-600 font-mono"><span id="marketValue">0</span></div></div>
-                <div id="percentPnlCard" class="compact-card p-3 border-l-4 border-slate-300 text-left"><p class="text-[9px] text-slate-400 font-bold uppercase">4. สัดส่วน %</p><div class="text-lg font-bold"><span id="percentPnl">0.00</span>%</div></div>
-                <div id="profitCard" class="compact-card p-3 border-l-4 border-slate-300 text-left"><p class="text-[9px] text-slate-400 font-bold uppercase">5. กำไร/ขาดทุน</p><div class="text-lg font-bold font-mono"><span id="currentProfit">0</span></div></div>
-                <div class="compact-card p-3 border-l-4 border-emerald-400 text-left"><p class="text-[9px] text-emerald-600 font-bold uppercase">6. ทำกำไรแล้ว</p><div class="text-lg font-bold text-emerald-600 font-mono"><span id="accumulatedProfit">0</span></div></div>
+            <div class="grid grid-cols-2 gap-2 text-left">
+                <div class="compact-card p-3 border-l-4 border-emerald-500"><p class="text-[9px] text-slate-400 font-bold">1. ทองปัจจุบัน</p><div class="text-lg font-bold"><span id="totalWeight">0.00</span></div></div>
+                <div class="compact-card p-3 border-l-4 border-purple-500"><p class="text-[9px] text-slate-400 font-bold">2. ต้นทุนรวม</p><div class="text-lg font-bold"><span id="totalCurrentCost">0</span></div></div>
+                <div class="compact-card p-3 border-l-4 border-blue-400"><p class="text-[9px] text-blue-600 font-bold">3. มูลค่ารวมวันนี้</p><div class="text-lg font-bold text-blue-600 font-mono"><span id="marketValue">0</span></div></div>
+                <div id="percentPnlCard" class="compact-card p-3 border-l-4 border-slate-300"><p class="text-[9px] text-slate-400 font-bold">4. สัดส่วน %</p><div class="text-lg font-bold"><span id="percentPnl">0.00</span>%</div></div>
+                <div id="profitCard" class="compact-card p-3 border-l-4 border-slate-300"><p class="text-[9px] text-slate-400 font-bold">5. กำไร/ขาดทุน</p><div class="text-lg font-bold font-mono"><span id="currentProfit">0</span></div></div>
+                <div class="compact-card p-3 border-l-4 border-emerald-400"><p class="text-[9px] text-emerald-600 font-bold uppercase">6. ทำกำไรแล้ว</p><div class="text-lg font-bold text-emerald-600 font-mono"><span id="accumulatedProfit">0</span></div></div>
             </div>
         </div>
 
@@ -66,7 +62,7 @@
 
         <div id="page-form" class="hidden animate-in slide-in-from-bottom">
             <div class="compact-card p-5 text-left">
-                <h2 class="font-bold mb-4 text-emerald-700 border-b pb-2 text-sm uppercase italic">➕ บันทึกซื้อทองใหม่</h2>
+                <h2 class="font-bold mb-4 text-emerald-700 border-b pb-2 text-sm italic uppercase tracking-tighter">➕ บันทึกซื้อทองใหม่</h2>
                 <div class="space-y-3">
                     <div><label class="text-[10px] font-bold text-slate-500 uppercase">วันที่ซื้อ</label><input type="date" id="buyDate" class="w-full border p-3 rounded-xl text-sm font-bold bg-slate-50"></div>
                     <div class="grid grid-cols-2 gap-2">
@@ -74,8 +70,8 @@
                         <div><label class="text-[10px] font-bold text-slate-500 uppercase">น้ำหนัก (บาท)</label><input type="number" step="0.01" id="buyAmount" class="w-full border p-3 rounded-xl font-bold text-sm bg-slate-50"></div>
                     </div>
                     <div><label class="text-[10px] font-bold text-slate-500 uppercase">ค่ากำเหน็จรวม</label><input type="number" id="buyFee" class="w-full border p-3 rounded-xl text-sm" value="0"></div>
-                    <div><label class="text-[10px] font-bold text-orange-600 uppercase">หมายเหตุ</label><input type="text" id="buyNote" class="w-full border p-3 rounded-xl text-sm" placeholder="เช่น สร้อย, แหวน"></div>
-                    <button onclick="submitBuy()" id="btnBuy" class="w-full gold-nav text-white py-4 rounded-2xl font-bold shadow-lg mt-2 text-sm italic">✅ บันทึกสำเร็จ</button>
+                    <div><label class="text-[10px] font-bold text-orange-600 uppercase">หมายเหตุ</label><input type="text" id="buyNote" class="w-full border p-3 rounded-xl text-sm" placeholder="สร้อย, แหวน"></div>
+                    <button onclick="submitBuy()" id="btnBuy" class="w-full gold-nav text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition mt-2 text-sm italic">✅ บันทึกข้อมูลสำเร็จ</button>
                 </div>
             </div>
         </div>
@@ -103,12 +99,13 @@
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
+                if (data.status === "error") throw new Error(data.message);
                 rawData = data.inventory;
                 accProfit = data.accumulatedProfit;
                 document.getElementById('currentGoldPrice').value = data.lastPrice || 0;
                 document.getElementById('accumulatedProfit').innerText = Math.round(accProfit).toLocaleString();
                 renderInventory();
-            } catch (err) { alert("ดึงข้อมูลไม่สำเร็จ"); }
+            } catch (err) { alert("ดึงข้อมูลไม่สำเร็จ: " + err.message); }
         }
 
         async function updatePriceToServer() {
@@ -120,35 +117,26 @@
             const container = document.getElementById('inventoryContainer');
             let totalW = 0; let totalC = 0;
             container.innerHTML = "";
-            
             if (rawData.length === 0) {
                 container.innerHTML = `<div class="compact-card p-10 text-center text-slate-300 italic text-xs font-bold uppercase tracking-widest">ไม่มีทองในคลัง</div>`;
                 return;
             }
-
             const cP = parseFloat(document.getElementById('currentGoldPrice').value) || 0;
-
             rawData.forEach(item => {
                 const w = parseFloat(item["คงเหลือ"]) || 0;
                 const bP = parseFloat(item["ราคาซื้อ/บาท"]) || 0;
                 const f = parseFloat(item["ค่ากำเหน็จ"]) || 0;
-                
-                // คำนวณต้นทุนต่อชิ้น (รวมกำเหน็จที่จ่ายไปทั้งหมดต่อล็อตนั้น)
                 const rowTotalCost = (bP * w) + f;
-                
-                // จุดแก้ไขสำคัญ: คำนวณกำไรแยกตามล็อตจริง (cP * น้ำหนักที่เหลือ) - ต้นทุนของล็อตนั้น
                 const profitPerLot = (cP * w) - rowTotalCost;
-
                 totalW += w; totalC += rowTotalCost;
-
                 const card = document.createElement('div');
                 card.className = "compact-card p-3 border-l-2 border-amber-400 text-left";
                 card.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div class="space-y-0.5">
                             <span class="text-xs text-slate-800 font-bold italic">ล็อตที่ ${item["Lot No."]}</span>
-                            <div class="text-[10px] text-slate-400 italic">📅 ${toThaiDate(item["วันที่ซื้อ"])} | 📝 ${item["รายละเอียด"] || item["หมายเหตุ"] || "-"}</div>
-                            <div class="text-[10px] text-blue-700 font-bold uppercase italic tracking-tighter">ทุนรวม: <span class="underline">${Math.round(rowTotalCost).toLocaleString()}</span> <span class="text-slate-300 mx-1">|</span> กำเหน็จ: ${f}</div>
+                            <div class="text-[10px] text-slate-400 italic">📅 ${toThaiDate(item["วันที่ซื้อ"])} | 📝 ${item["รายละเอียด"] || "-"}</div>
+                            <div class="text-[10px] text-blue-700 font-bold uppercase italic tracking-tighter">ทุนรวม: <span class="underline">${Math.round(rowTotalCost).toLocaleString()}</span> | กำเหน็จ: ${f}</div>
                             <div class="text-[10px] flex gap-2 font-medium"><span class="text-slate-400 italic font-bold">ทุน/บาท: ${bP.toLocaleString()}</span> <span class="text-emerald-600 font-black italic">เหลือ: ${w.toFixed(2)} บาท</span></div>
                         </div>
                         <div class="text-right flex flex-col items-end gap-1.5">
@@ -157,8 +145,7 @@
                             </div>
                             <button onclick="sellPopup('${item["Lot ID"]}', ${w})" class="bg-rose-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow active:scale-95 transition italic">ขาย</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 container.appendChild(card);
             });
             document.getElementById('totalWeight').innerText = totalW.toFixed(2);
@@ -169,27 +156,18 @@
         function calculateRealtime() {
             const cP = parseFloat(document.getElementById('currentGoldPrice').value) || 0;
             let tW = 0; let tC = 0;
-            
-            // วนลูปใหม่เพื่อให้ค่า cP ล่าสุดมีผลต่อการคำนวณกำไรรายล็อต
-            const container = document.getElementById('inventoryContainer');
-            if (rawData.length > 0) renderInventory();
-
             rawData.forEach(item => {
                 const w = parseFloat(item["คงเหลือ"]) || 0;
                 const bP = parseFloat(item["ราคาซื้อ/บาท"]) || 0;
                 const f = parseFloat(item["ค่ากำเหน็จ"]) || 0;
-                const currentLotCost = (bP * w) + f;
-                tW += w; tC += currentLotCost;
+                tW += w; tC += (bP * w) + f;
             });
-
             const mVal = cP * tW; 
             const netProfit = mVal - tC; 
             const pPct = tC > 0 ? (netProfit / tC) * 100 : 0; 
-            
             document.getElementById('marketValue').innerText = Math.round(mVal).toLocaleString();
             document.getElementById('percentPnl').innerText = pPct.toFixed(2);
             document.getElementById('currentProfit').innerText = Math.round(netProfit).toLocaleString();
-            
             const colorClass = netProfit >= 0 ? 'text-emerald-600' : 'text-rose-500';
             const borderClass = netProfit >= 0 ? 'border-emerald-400 shadow-sm' : 'border-rose-400 shadow-sm';
             document.getElementById('currentProfit').className = `text-lg font-bold ${colorClass} font-mono`;
@@ -203,7 +181,7 @@
             const w = document.getElementById('buyAmount').value;
             const p = document.getElementById('buyPrice').value;
             if(!w || !p) return alert("⚠️ กรุณากรอกราคาและน้ำหนัก");
-            b.disabled = true; b.innerText = "⏳ บันทึกข้อมูล...";
+            b.disabled = true; b.innerText = "⏳ บันทึก...";
             const payload = {
                 action: "buy", date: document.getElementById('buyDate').value,
                 amount: w, price: p, fee: document.getElementById('buyFee').value || 0,
